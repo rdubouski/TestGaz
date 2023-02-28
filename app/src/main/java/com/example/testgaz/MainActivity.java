@@ -2,6 +2,7 @@ package com.example.testgaz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_quest:
-                button.setVisibility(View.INVISIBLE);
+                Intent intentq = new Intent(this, questionnaire.class);
+                startActivity(intentq);
                 break;
             default:
                 break;
