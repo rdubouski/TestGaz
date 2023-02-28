@@ -8,6 +8,31 @@
     android:background="@drawable/fon"
     android:padding="16dp">
 
+    <ImageView
+        android:id="@+id/ans"
+        android:layout_width="700dp"
+        android:layout_height="300dp"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/fon"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/coment"
+        android:layout_width="700dp"
+        android:layout_height="300dp"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.008" />
+
     <TextView
         android:id="@+id/tquest"
         android:layout_width="700dp"

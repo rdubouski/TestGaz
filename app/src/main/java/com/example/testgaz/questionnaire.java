@@ -3,14 +3,12 @@ package com.example.testgaz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -20,9 +18,11 @@ public class questionnaire extends AppCompatActivity implements View.OnClickList
     String[][] squest;
     int count = 0;
     Button btn_n;
-    TextView texquest, textdialog;
+    TextView texquest, coment;
+    ImageView imageView;
     RadioGroup radGrp;
     RadioButton af, sf, tf;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +42,16 @@ public class questionnaire extends AppCompatActivity implements View.OnClickList
         };
 
         texquest = findViewById(R.id.tquest);
+
+        imageView = (ImageView) findViewById(R.id.ans);
+        imageView.setVisibility(View.INVISIBLE);
+        imageView.setClickable(true);
+        imageView.setOnClickListener(this);
+
+        coment = (TextView) findViewById(R.id.coment);
+        coment.setVisibility(View.INVISIBLE);
+        coment.setClickable(true);
+        coment.setOnClickListener(this);
         radGrp = (RadioGroup)findViewById(R.id.radios);
         af = findViewById(R.id.a_first);
         sf = findViewById(R.id.a_sec);
@@ -59,74 +69,246 @@ public class questionnaire extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        if(count == 0) {
-            if (af.isChecked()) {
-                createOneButtonAlertDialog(Color.RED, "Вы были близки к правильному ответу, но нет! Согласно правил безопасного пользования газом в быту Дети с 12-ти летнего возраста после проведения инструктажа могут быть допущены к самостоятельной работе с газовой плитой");
-            } else if (sf.isChecked()) {
-                createOneButtonAlertDialog(Color.GREEN, "Браво! Вы абсолютно правы!");
-                radGrp.clearCheck();
-                count++;
-            } else if (tf.isChecked()) {
-                createOneButtonAlertDialog(Color.RED, "Увы, но нет! Попробуйте ещё раз!");
-            }
-        } else if(count == 1) {
-            if (af.isChecked()) {
-                createOneButtonAlertDialog(Color.GREEN, "Вы абсолютно правы!");
-                radGrp.clearCheck();
-                count++;
-            } else if (sf.isChecked()) {
-                createOneButtonAlertDialog(Color.RED, "Очень жаль, но всё немного иначе! Попробуйте снова.");
-            } else if (tf.isChecked()) {
-                createOneButtonAlertDialog(Color.RED, "Ни в коем случае! Данного рода  занятия могут привести к очень плачевным результатам!!!");
-            }
-        } else if(count == 2) {
-            if (af.isChecked()) {
-                createOneButtonAlertDialog(Color.RED, "Вы шутите?");
-            } else if (sf.isChecked()) {
-                createOneButtonAlertDialog(Color.RED, "Неа! Мы думаем что после усвоения инструктажа, Вам данный номер использовать не придётся, относительно газа");
-            } else if (tf.isChecked()) {
-                createOneButtonAlertDialog(Color.GREEN, "Если дома пахнет газом, Ты не спи и не скучай. Газ скорей перекрывай, окна шире открывай 104 набирай, службу газа вызывай!");
-                radGrp.clearCheck();
-                count++;
-                texquest.setVisibility(View.INVISIBLE);
-                af.setVisibility(View.INVISIBLE);
-                sf.setVisibility(View.INVISIBLE);
-                tf.setVisibility(View.INVISIBLE);
-                btn_n.setText("Закончить тест");
-
-            }
-        } else if (count == 3) {
-            count++;
-            btn_n.setText("Вернуться на главный экран");
-            createOneButtonAlertDialog(Color.BLUE, "Благодарим Вас, что не отказались ответить на несколько вопросов! Теперь мы уверены что вы сможете проследить за своей безопасностью и безопасностью своих близких!");
-
-        } else if (count == 4) {
-            btn_n.setVisibility(View.INVISIBLE);
-            onBackPressed();
-        }
-        if (count < 3) {
-            texquest.setText(squest[count][0]);
-            af.setText(squest[count][1]);
-            sf.setText(squest[count][2]);
-            tf.setText(squest[count][3]);
+        switch (v.getId()) {
+            case R.id.ans :
+            case R.id.coment :
+                coment.setVisibility(View.INVISIBLE);
+                imageView.setVisibility(View.INVISIBLE);
+                texquest.setVisibility(View.VISIBLE);
+                af.setVisibility(View.VISIBLE);
+                sf.setVisibility(View.VISIBLE);
+                tf.setVisibility(View.VISIBLE);
+                btn_n.setVisibility(View.VISIBLE);
+                if (count >= 4) {
+                    tf.setVisibility(View.INVISIBLE);
+                }
+                if (count >= 6) {
+                    coment.setVisibility(View.INVISIBLE);
+                    imageView.setVisibility(View.INVISIBLE);
+                    texquest.setVisibility(View.INVISIBLE);
+                    af.setVisibility(View.INVISIBLE);
+                    sf.setVisibility(View.INVISIBLE);
+                    tf.setVisibility(View.INVISIBLE);
+                    btn_n.setText("Закончить тест");
+                }
+                break;
+            case R.id.btn_next :
+                if(count == 0) {
+                    if (af.isChecked()) {
+                        coment.setText("Вы были близки к правильному ответу, но нет! Согласно правил безопасного пользования газом в быту Дети с 12-ти летнего возраста после проведения инструктажа могут быть допущены к самостоятельной работе с газовой плитой");
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    } else if (sf.isChecked()) {
+                        coment.setText("Браво! Вы абсолютно правы!");
+                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.q1));
+                        coment.setBackgroundColor(Color.GREEN);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.VISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                        radGrp.clearCheck();
+                        count++;
+                    } else if (tf.isChecked()) {
+                        coment.setText("Увы, но нет! Попробуйте ещё раз!");
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    }
+                } else if(count == 1) {
+                    if (af.isChecked()) {
+                        coment.setText("Вы абсолютно правы!");
+                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.q2));
+                        coment.setBackgroundColor(Color.GREEN);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.VISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                        radGrp.clearCheck();
+                        count++;
+                    } else if (sf.isChecked()) {
+                        coment.setText("Очень жаль, но всё немного иначе! Попробуйте снова.");
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    } else if (tf.isChecked()) {
+                        coment.setText("Ни в коем случае! Данного рода  занятия могут привести к очень плачевным результатам!!!");
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    }
+                } else if(count == 2) {
+                    if (af.isChecked()) {
+                        coment.setText("Вы шутите?");
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    } else if (sf.isChecked()) {
+                        coment.setText("Ни в коем случае! Данного рода  занятия могут привести к очень плачевным результатам!!!");
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    } else if (tf.isChecked()) {
+                        coment.setText("Если дома пахнет газом, Ты не спи и не скучай. Газ скорей перекрывай, окна шире открывай 104 набирай, службу газа вызывай!");
+                        coment.setBackgroundColor(Color.GREEN);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                        radGrp.clearCheck();
+                        count++;
+                    }
+                } else if(count == 3) {
+                    if (af.isChecked()) {
+                        coment.setText("Правда? Давайте попробуем ещё раз");
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    } else if (sf.isChecked()) {
+                        coment.setText("Вы явно не стараетесь, ну же!");
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    } else if (tf.isChecked()) {
+                        coment.setText("Так держать! В случае необходимости замены газоиспользующего оборудования необходимо обратиться в газоснабжающую или обслуживающую организацию");
+                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.q4));
+                        coment.setBackgroundColor(Color.GREEN);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.VISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                        radGrp.clearCheck();
+                        count++;
+                    }
+                } else if(count == 4) {
+                    if (af.isChecked()) {
+                        coment.setText("Ни в коем случае!");
+                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.q5));
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.VISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    } else if (sf.isChecked()) {
+                        coment.setText("Абсолютно верно! Берегите себя и своих близких!");
+                        coment.setBackgroundColor(Color.GREEN);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                        radGrp.clearCheck();
+                        count++;
+                    }
+                } else if(count == 5) {
+                    if (af.isChecked()) {
+                        coment.setText("Не совсем так!Хотя для выполнения ремонта вы обязаны обратиться в обслуживающую организацию");
+                        coment.setBackgroundColor(Color.RED);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                    } else if (sf.isChecked()) {
+                        coment.setText("Абсолютно точно! Своевременное обслуживание Вашего газоиспользующего оборудования, гарантия безопасной его эксплуатации");
+                        coment.setBackgroundColor(Color.GREEN);
+                        coment.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        texquest.setVisibility(View.INVISIBLE);
+                        af.setVisibility(View.INVISIBLE);
+                        sf.setVisibility(View.INVISIBLE);
+                        tf.setVisibility(View.INVISIBLE);
+                        btn_n.setVisibility(View.INVISIBLE);
+                        radGrp.clearCheck();
+                        count++;
+                    }
+                } else if (count == 6) {
+                    count++;
+                    btn_n.setText("Вернуться на главный экран");
+                    coment.setText("Благодарим Вас, что не отказались ответить на несколько вопросов! Теперь мы уверены что вы сможете проследить за своей безопасностью и безопасностью своих близких!");
+                    coment.setBackgroundColor(Color.BLUE);
+                    coment.setVisibility(View.VISIBLE);
+                    imageView.setVisibility(View.INVISIBLE);
+                    texquest.setVisibility(View.INVISIBLE);
+                    af.setVisibility(View.INVISIBLE);
+                    sf.setVisibility(View.INVISIBLE);
+                    tf.setVisibility(View.INVISIBLE);
+                    btn_n.setVisibility(View.VISIBLE);
+                } else if (count == 7) {
+                    btn_n.setVisibility(View.INVISIBLE);
+                    onBackPressed();
+                }
+                if (count < 6) {
+                    texquest.setText(squest[count][0]);
+                    af.setText(squest[count][1]);
+                    sf.setText(squest[count][2]);
+                    tf.setText(squest[count][3]);
+                }
+                break;
         }
     }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
-    }
-
-    private void createOneButtonAlertDialog(int color, String content) {
-        textdialog = new TextView(this);
-        textdialog.setText(content);
-        textdialog.setBackgroundColor(color);
-        textdialog.setPadding(10, 10, 10, 10);
-        textdialog.setGravity(Gravity.CENTER);
-        textdialog.setTextColor(Color.WHITE);
-        textdialog.setTextSize(40);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCustomTitle(textdialog);
-        builder.show();
     }
 }
